@@ -1,5 +1,3 @@
-const input = document.querySelector('input');
-
 const fetchData = async (searchTerm) => {
   const response = await axios.get('http://www.omdbapi.com/', {
     params: {
@@ -16,19 +14,38 @@ const fetchData = async (searchTerm) => {
   return response.data.Search;
 };
 
+const root = document.querySelector('.autocomplete');
+// dynamically created search component
+root.innerHTML = `
+<label><b>Search For a Movie</b></label>
+<input class="input" />
+  <div class="dropdown">
+    <div class="dropdown-menu">
+      <div class="dropdown-content results"></div>
+    </div>
+  </div>
+`;
+
+const input = document.querySelector('input');
+const dropdown = document.querySelector('.dropdown');
+const resultsWrapper = document.querySelector('.results');
+
 // Function handling search functionality with inside input
 const onInputHandler = async (e) => {
   const movies = await fetchData(e.target.value);
 
-  for (let movie of movies) {
-    const div = document.createElement('div');
+  dropdown.classList.add('is-active');
 
-    div.innerHTML = `
+  for (let movie of movies) {
+    const option = document.createElement('a');
+
+    option.classList.add('dropdown-item');
+    option.innerHTML = `
     <img src="${movie.Poster}" />
-    <h1>${movie.Title}</h1>
+    ${movie.Title}
     `;
 
-    document.querySelector('#here-temp').appendChild(div);
+    resultsWrapper.appendChild(option);
   }
 };
 
