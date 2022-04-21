@@ -34,14 +34,23 @@ const resultsWrapper = document.querySelector('.results');
 const onInputHandler = async (e) => {
   const movies = await fetchData(e.target.value);
 
+  // make sure empty dropdown is not shown if there is no search results.
+  if (!movies.length) {
+    dropdown.classList.remove('is-active');
+    return;
+  }
+
+  resultsWrapper.innerHTML = '';
   dropdown.classList.add('is-active');
 
   for (let movie of movies) {
     const option = document.createElement('a');
+    // Do not show image if there is not one. Omdb API has N/A string if there is no image available.
+    const imgSrc = movie.Poster === 'N/A' ? '' : movie.Poster;
 
     option.classList.add('dropdown-item');
     option.innerHTML = `
-    <img src="${movie.Poster}" />
+    <img src="${imgSrc}" />
     ${movie.Title}
     `;
 
@@ -50,3 +59,10 @@ const onInputHandler = async (e) => {
 };
 
 input.addEventListener('input', debounce(onInputHandler, 500));
+
+// Simple way to close search dropdown when clicked outside of root element.
+document.addEventListener('click', (e) => {
+  if (!root.contains(e.target)) {
+    dropdown.classList.remove('is-active');
+  }
+});
