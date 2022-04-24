@@ -36,6 +36,11 @@ figure .image img {
   justify-content: space-around;
 }
 
+.dropdown {
+  display: flex;
+  flex-direction: column;
+}
+
 .dropdown-item {
   display: flex;
   align-items: center;

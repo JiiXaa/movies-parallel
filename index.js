@@ -2,6 +2,7 @@ const fetchData = async (searchTerm) => {
   const response = await axios.get('http://www.omdbapi.com/', {
     params: {
       apikey: 'd6abc885',
+      // general search, only handful of data in every movie search
       s: searchTerm,
     },
   });
@@ -53,6 +54,15 @@ const onInputHandler = async (e) => {
     <img src="${imgSrc}" />
     ${movie.Title}
     `;
+    // listening for a click on every 'a' element (logic for clicking search entry)
+    option.addEventListener('click', () => {
+      // when click on the 'a' element close dropdown
+      dropdown.classList.remove('is-active');
+      // because of a closure, we have access to the movie object
+      input.value = movie.Title;
+      // helper function, logic when you choose a movie
+      onMovieSelect(movie);
+    });
 
     resultsWrapper.appendChild(option);
   }
@@ -66,3 +76,16 @@ document.addEventListener('click', (e) => {
     dropdown.classList.remove('is-active');
   }
 });
+
+// second data fetch for more detailed information, after film is chosen
+const onMovieSelect = async (movie) => {
+  const response = await axios.get('http://www.omdbapi.com/', {
+    params: {
+      apikey: 'd6abc885',
+      // individual movie information (contains more information)
+      i: movie.imdbID,
+    },
+  });
+
+  console.log(response.data);
+};
