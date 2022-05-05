@@ -1,4 +1,9 @@
-const createAutoComplete = ({ root }) => {
+const createAutoComplete = ({
+  root,
+  renderOption,
+  onOptionSelect,
+  inputValue,
+}) => {
   // dynamically created search component
   root.innerHTML = `
 <label><b>Search For a Movie</b></label>
@@ -29,22 +34,17 @@ const createAutoComplete = ({ root }) => {
 
     for (let movie of movies) {
       const option = document.createElement('a');
-      // Do not show image if there is not one. Omdb API has N/A string if there is no image available.
-      const imgSrc = movie.Poster === 'N/A' ? '' : movie.Poster;
 
       option.classList.add('dropdown-item');
-      option.innerHTML = `
-    <img src="${imgSrc}" />
-    ${movie.Title}
-    `;
+      option.innerHTML = renderOption(movie);
       // listening for a click on every 'a' element (logic for clicking search entry)
       option.addEventListener('click', () => {
         // when click on the 'a' element close dropdown
         dropdown.classList.remove('is-active');
         // because of a closure, we have access to the movie object
-        input.value = movie.Title;
+        input.value = inputValue(movie);
         // helper function, logic when you choose a movie
-        onMovieSelect(movie);
+        onOptionSelect(movie);
       });
 
       resultsWrapper.appendChild(option);

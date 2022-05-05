@@ -17,12 +17,20 @@ const fetchData = async (searchTerm) => {
 
 createAutoComplete({
   root: document.querySelector('.autocomplete'),
-});
-createAutoComplete({
-  root: document.querySelector('.autocomplete-two'),
-});
-createAutoComplete({
-  root: document.querySelector('.autocomplete-three'),
+  renderOption(movie) {
+    // Do not show image if there is not one. Omdb API has N/A string if there is no image available.
+    const imgSrc = movie.Poster === 'N/A' ? '' : movie.Poster;
+    return `
+    <img src="${imgSrc}" />
+    ${movie.Title} (${movie.Year})
+    `;
+  },
+  onOptionSelect(movie) {
+    onMovieSelect(movie);
+  },
+  inputValue(movie) {
+    return movie.Title;
+  },
 });
 
 // second data fetch for more detailed information, after film is chosen
