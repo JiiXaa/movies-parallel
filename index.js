@@ -1,20 +1,3 @@
-const fetchData = async (searchTerm) => {
-  const response = await axios.get('http://www.omdbapi.com/', {
-    params: {
-      apikey: 'd6abc885',
-      // general search, only handful of data in every movie search
-      s: searchTerm,
-    },
-  });
-
-  // omdbapi does not accept partial search term, and get data.Error instead of data.Search which looks like an error. That's why we return [] if response has data.Error
-  if (response.data.Error) {
-    return [];
-  }
-
-  return response.data.Search;
-};
-
 createAutoComplete({
   root: document.querySelector('.autocomplete'),
   renderOption(movie) {
@@ -30,6 +13,22 @@ createAutoComplete({
   },
   inputValue(movie) {
     return movie.Title;
+  },
+  async fetchData(searchTerm) {
+    const response = await axios.get('http://www.omdbapi.com/', {
+      params: {
+        apikey: 'd6abc885',
+        // general search, only handful of data in every movie search
+        s: searchTerm,
+      },
+    });
+
+    // omdbapi does not accept partial search term, and get data.Error instead of data.Search which looks like an error. That's why we return [] if response has data.Error
+    if (response.data.Error) {
+      return [];
+    }
+
+    return response.data.Search;
   },
 });
 

@@ -3,10 +3,11 @@ const createAutoComplete = ({
   renderOption,
   onOptionSelect,
   inputValue,
+  fetchData,
 }) => {
   // dynamically created search component
   root.innerHTML = `
-<label><b>Search For a Movie</b></label>
+<label><b>Search</b></label>
 <input class="input" />
   <div class="dropdown">
     <div class="dropdown-menu">
@@ -21,10 +22,10 @@ const createAutoComplete = ({
 
   // Function handling search functionality with inside input
   const onInputHandler = async (e) => {
-    const movies = await fetchData(e.target.value);
+    const items = await fetchData(e.target.value);
 
     // make sure empty dropdown is not shown if there is no search results.
-    if (!movies.length) {
+    if (!items.length) {
       dropdown.classList.remove('is-active');
       return;
     }
@@ -32,19 +33,19 @@ const createAutoComplete = ({
     resultsWrapper.innerHTML = '';
     dropdown.classList.add('is-active');
 
-    for (let movie of movies) {
+    for (let item of items) {
       const option = document.createElement('a');
 
       option.classList.add('dropdown-item');
-      option.innerHTML = renderOption(movie);
+      option.innerHTML = renderOption(item);
       // listening for a click on every 'a' element (logic for clicking search entry)
       option.addEventListener('click', () => {
         // when click on the 'a' element close dropdown
         dropdown.classList.remove('is-active');
-        // because of a closure, we have access to the movie object
-        input.value = inputValue(movie);
-        // helper function, logic when you choose a movie
-        onOptionSelect(movie);
+        // because of a closure, we have access to the item object
+        input.value = inputValue(item);
+        // helper function, logic when you choose a item
+        onOptionSelect(item);
       });
 
       resultsWrapper.appendChild(option);
