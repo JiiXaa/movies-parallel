@@ -1,5 +1,4 @@
-createAutoComplete({
-  root: document.querySelector('.autocomplete'),
+const autoCompleteConfig = {
   renderOption(movie) {
     // Do not show image if there is not one. Omdb API has N/A string if there is no image available.
     const imgSrc = movie.Poster === 'N/A' ? '' : movie.Poster;
@@ -7,9 +6,6 @@ createAutoComplete({
     <img src="${imgSrc}" />
     ${movie.Title} (${movie.Year})
     `;
-  },
-  onOptionSelect(movie) {
-    onMovieSelect(movie);
   },
   inputValue(movie) {
     return movie.Title;
@@ -30,10 +26,32 @@ createAutoComplete({
 
     return response.data.Search;
   },
+};
+
+createAutoComplete({
+  ...autoCompleteConfig,
+  root: document.querySelector('#left-autocomplete'),
+  onOptionSelect(movie) {
+    document.querySelector('.tutorial').classList.add('is-hidden');
+    onMovieSelect(movie, document.querySelector('#left-summary'), 'left');
+  },
 });
 
+createAutoComplete({
+  ...autoCompleteConfig,
+  root: document.querySelector('#right-autocomplete'),
+  onOptionSelect(movie) {
+    document.querySelector('.tutorial').classList.add('is-hidden');
+    onMovieSelect(movie, document.querySelector('#right-summary'), 'right');
+  },
+});
+
+// containers for movie comparison
+let leftMovie;
+let rightMovie;
+
 // second data fetch for more detailed information, after film is chosen
-const onMovieSelect = async (movie) => {
+const onMovieSelect = async (movie, summaryElement, side) => {
   const response = await axios.get('http://www.omdbapi.com/', {
     params: {
       apikey: 'd6abc885',
@@ -42,7 +60,21 @@ const onMovieSelect = async (movie) => {
     },
   });
 
-  document.querySelector('#summary').innerHTML = movieTemplate(response.data);
+  summaryElement.innerHTML = movieTemplate(response.data);
+
+  if (side === 'left') {
+    leftMovie = response.data;
+  } else {
+    rightMovie = response.data;
+  }
+
+  if (leftMovie && rightMovie) {
+    runComparison();
+  }
+};
+
+const runComparison = () => {
+  console.log('Time for comparison');
 };
 
 const movieTemplate = (movieDetail) => {
