@@ -78,6 +78,14 @@ const runComparison = () => {
 };
 
 const movieTemplate = (movieDetail) => {
+  // change "$500,000,000" to 500000000 and parse it to int for easier comparison
+  const dollars = parseInt(
+    movieDetail.BoxOffice.replace(/\$/g, '').replace(/,/g, '')
+  );
+  const metascore = parseInt(movieDetail.Metascore);
+  const imdbRating = parseFloat(movieDetail.imdbRating);
+  const imdbVotes = parseInt(movieDetail.imdbVotes.replace(/,/g, ''));
+
   return `
   <article class="media">
     <figure class="media-left">
