@@ -74,7 +74,29 @@ const onMovieSelect = async (movie, summaryElement, side) => {
 };
 
 const runComparison = () => {
-  console.log('Time for comparison');
+  const leftSideStats = document.querySelectorAll(
+    '#left-summary .notification'
+  );
+  const rightSideStats = document.querySelectorAll(
+    '#right-summary .notification'
+  );
+
+  leftSideStats.forEach((leftStat, idx) => {
+    const rightStat = rightSideStats[idx];
+
+    // dataset.value returns a string value, so comparison is wrong in cases like '5' > '45' = true. We need to parse it to the number.
+    const leftSideValue = parseInt(leftStat.dataset.value);
+    const rightSideValue = parseInt(rightStat.dataset.value);
+
+    console.log('left', leftSideValue, 'right', rightSideValue);
+    if (rightSideValue > leftSideValue) {
+      leftStat.classList.remove('is-primary');
+      leftStat.classList.add('is-warning');
+    } else {
+      rightStat.classList.remove('is-primary');
+      rightStat.classList.add('is-warning');
+    }
+  });
 };
 
 const movieTemplate = (movieDetail) => {
